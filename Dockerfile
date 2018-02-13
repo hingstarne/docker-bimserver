@@ -3,20 +3,20 @@
 # Based on Ubuntu 14.04 x64
 ############################################################
 
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 MAINTAINER connor@jenca.io
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Initialise software and update the repository sources list
 
-RUN apt-get update
-RUN apt-get -y install software-properties-common && \
-	add-apt-repository -y ppa:openjdk-r/ppa
-RUN apt-get -y update && apt-get -y install \
+RUN apt update && apt -y install software-properties-common \
 	openjdk-8-jdk \
 	git \
 	ant \
-	wget
-RUN echo "Europe/London" > /etc/timezone
+	wget \
+	tzdata
+RUN echo "Europe/Berlin" > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata
 
 ################## BEGIN INSTALLATION ######################
@@ -26,10 +26,10 @@ RUN dpkg-reconfigure -f noninteractive tzdata
 RUN mkdir /opt/tomcat
 RUN groupadd tomcat
 RUN useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
-RUN wget http://archive.apache.org/dist/tomcat/tomcat-8/v8.0.3/bin/apache-tomcat-8.0.3.tar.gz \
-	-O /tmp/apache-tomcat-8.0.30.tar.gz
-RUN tar xvf /tmp/apache-tomcat-8.0.30.tar.gz -C /opt/tomcat --strip-components=1
-RUN rm -f /tmp/apache-tomcat-8.0.30.tar.gz
+RUN wget http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.28/bin/apache-tomcat-8.5.28.tar.gz \
+	-O /tmp/apache-tomcat-8.5.28.tar.gz
+RUN tar xvf /tmp/apache-tomcat-8.5.28.tar.gz -C /opt/tomcat --strip-components=1
+RUN rm -f /tmp/apache-tomcat-8.5.28.tar.gz
 
 # Set permissions for group and user to install BIMserver and edit conf
 
@@ -42,7 +42,7 @@ RUN chmod a+rwx /opt && chmod a+rwx /opt/tomcat/webapps
 
 # Download BIMserver into /webapps for autodeploy
 
-RUN wget https://github.com/opensourceBIM/BIMserver/releases/download/1.4.0-FINAL-2015-11-04/bimserver-1.4.0-FINAL-2015-11-04.war \
+RUN wget https://github.com/opensourceBIM/BIMserver/releases/download/parent-1.5.95/bimserverwar-1.5.95.war \
 	-O /opt/tomcat/webapps/BIMserver.war
 
 # Set environment paths for Tomcat
